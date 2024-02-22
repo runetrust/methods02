@@ -1,0 +1,82 @@
+---
+title: "Untitled"
+author: "Rune"
+date: "2024-02-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(pacman)
+pacman::p_load(knitr,
+               ggplot2)
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = 'C:/Uni/2_semester/Methods_02/methods02')
+```
+
+```{r}
+#Function
+myfunc <- function(number){
+  new_number = number+2
+  return(new_number)
+}
+
+myfunc(2)
+
+
+```
+```{r}
+# Parameters
+mu = 0
+sigma = 1.0
+tau = 1.0
+
+#Defining f1 function
+f1 <- function(x, mu, sigma) {
+  (1 / (sigma * sqrt(2 * pi))) * exp(-0.5 * ((x - mu) / sigma) ^ 2)
+}
+
+f2 <- function(x, mu, tau) {
+  (sqrt(tau / (2 * pi))) * (exp(-tau * (x - mu) ^ 2) / 2)
+}
+
+
+
+```
+
+
+```{r}
+#Generate some x-values for the functions
+x_values <- seq(-5,
+                5,
+                by = 0.1)
+
+#Calculate y values using the functions f1 and f2
+y_f1 <- f1(x = x_values,
+           mu = 0,
+           sigma = 2)
+
+y_f2 <- f2(x = x_values,
+           tau = 20,
+           mu = 0)
+
+#Creating a dataframe for plots
+df <- data.frame(x = x_values,
+                 f1 = y_f1,
+                 f2 = y_f2)
+
+plot1 <- ggplot(df,
+                aes(x)) +
+  geom_line(aes(y = f1, colour = "f1")) +
+  geom_line(aes(y = f2, colour = "f2")) +
+  labs(title = "probability density functions with mu = 0, sigma = 1, tau = 1", 
+       subtitle = "learning") +
+  theme_minimal()
+
+plot1
+
+#create a col to check if theyre the same
+library(tidyverse)
+df <- df %>% mutate(checking_stuff = ifelse(f1 == f2, TRUE, FALSE))
+
+```
+
