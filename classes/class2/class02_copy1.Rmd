@@ -63,7 +63,7 @@ while (number < 10){ # While the number is below 10, do the following
 some_number = 0
 while (some_number<20){
   print("The number is still below 20")
-  print(some_number)x
+  print(some_number)
   some_number = some_number + 3.5
 }
 ```
@@ -74,14 +74,19 @@ Create a function that accepts a temperature in Fahrenheit and returns the tempe
 ```{r}
 # Function to convert Fahrenheit to Celsius
 convert_to_celsius <- function(fahrenheit) {
-  # Your code here
-  # Hint: Apply the conversion formula within the function
+  celsius = (fahrenheit - 32) * 5 / 9 #This is the formula for the conversion
+  return(celsius)
 }
+  # Hint: Apply the conversion formula within the function
+
 
 # Example of how the final function (when you've written it) should be used:
 # temp_celsius <- convert_to_celsius(68)
 # print(temp_celsius)
 # Expected Output (for fahrenheit = 68): 20
+temp_celsius <- convert_to_celsius(97)
+print(temp_celsius)
+
 ```
 
 ### Ex. E: Write a function in R that provides clothing advice based on the temperature:
@@ -97,9 +102,17 @@ Use statements if, else if, and else. Google how to set up the syntax with curly
 ```{r}
 # Function to give clothing advice based on temperature
 clothing_advice <- function(temperature) {
-  # Your code here
-  # Hint: Use if-else statements to check the temperature and return the advice
+  if (temperature > 25) {
+    print("You should wear a T-shirt")
+  } else if (temperature >= 15 & temperature <= 25) {
+    print("You may wish to wear a light jacket")
+  } else { #Else statements do not check conditions, they run if the above are not met
+      print("You should really be wearing a big boy jacket")
+    }
 }
+clothing_advice(10)
+# Hint: Use if-else statements to check the temperature and return the advice
+
 
 # Example of how the final function (when you've written it) should be used:
 # advice <- clothing_advice(20)
@@ -111,6 +124,85 @@ clothing_advice <- function(temperature) {
 ## Exercises from the book
 
 ## Ex. 0: Write up / copy the code found on page 69-70 in chapter 5 ROS and note whats going on at each step. The book explains it - so just go through it and discuss with your group to understand whats going on.
+
+```{r simulating birth data}
+n_girls <- rbinom(1, 400, 0.488)
+print(n_girls)
+
+#This is a for loop that takes the number of simulations (n_sims) into account
+#NA ignores the call for an x in the rep() function, and simply repeats for the amount of sims
+#n_girls then gets assigned according to the binomial distrubtion in rbinom()
+n_sims <- 1000
+n_girls <- rep(NA, n_sims)
+for(s in 1:n_sims){
+  n_girls[s] <- rbinom(1, 400, 0.488)
+}
+#It is also possible to sample directly 
+#rbinom expects(number of simulations / n, size of the simulation (how many?), probability)
+n_girls <- rbinom(n_sims, 400, 0.488)
+
+hist(n_girls)
+```
+```{r births taking twins into account}
+birth_type <-
+  sample(
+    c("fraternal twin", "identical twin", "single birth"),
+    size = 400,
+    replace = TRUE,
+    prob = c(1 / 125, 1 / 300, 1 - 1 / 125 - 1 / 300)
+  )
+
+girls <- rep(NA, 400)
+
+#This makes "girls" a vector with a length of 400 which consists of 0, 1 and 2, which designate the amount of girls in a single birth event - therefore it will be mostly 0's and 1's as there are few twins
+for (i in 1:400) {
+  if (birth_type[i] == "single birth") {
+    girls[i] <- rbinom(1, 1, 0.488)
+  } else if (birth_type[i] == "identical twin") {
+    girls[i] <- 2 * rbinom(1, 1, 0.495)
+  } else if (birth_type[i] == "fraternal twin") {
+    girls[i] <- rbinom(1, 2, 0.495)
+  }
+}
+
+# It can also be done using ifelse() function directly, this seems to be similar to statement_true ? statement_false syntax from JavaScript
+
+girls <- ifelse(
+  birth_type == "single birth",
+  rbinom(400, 1, 0.488),
+  ifelse(
+    birth_type == "identical twin",
+    rbinom(400, 1, 0.495),
+    rbinom(400, 2, 0.495)
+  )
+)
+
+```
+
+```{r looping births}
+n_girls <- sum(girls)
+
+n_sims <- 1000
+n_girls <- rep(NA, n_sims)
+for (s in 1:n_sims){
+  birth_type <- sample(c("fraternal twin", "identical twin", "single birth"),
+                       size = 400, replace = TRUE, prob = c(1/125, 1/300, 1 - 1/125 - 1/300))
+  girls <- rep(NA, 400)
+  for (i in 1:400) {
+    if (birth_type[i] == "single birth") {
+      girls[i] <- rbinom(1, 1, 0.488)
+    } else if (birth_type[i]=="identical twin") {
+      girls[i] <- 2*rbinom(1, 1, 0.495)
+    } else if (birth_type[i] == "fraternal twin") {
+      girls[i] <- rbinom(1, 2, 0.495)
+    }
+  }
+  n_girls[s] <- sum(girls)
+}
+hist(n_girls)
+```
+
+
 
 ### Ex. 5.1 Discrete probability simulation: Suppose that a basketball player has a 60% chance of making a shot, and he keeps taking shots until he misses two in a row. Also assume his shots are independent (so that each shot has 60% probability of success, no matter what happened before).
 * Hint 3 and 4
@@ -130,26 +222,120 @@ We need to record:
 - shots taken
 
 Let's try and write a function:
-```{r}
+```{r simulating basketball shots returning only total number}
 # Function to simulate basketball player
-basketball <- function(){ # starting the function for you
-  
-  # your code here
-  
+basketball <- function(){
+  consecutive_shot <- 0
+  shots <- 0
+  total_shots <- 0
+  while (consecutive_shot < 2) {
+    if (rbinom(1,1, 0.6) >= 1) {
+      consecutive_shot <- 0
+      shots <- shots + 1
+      #print("You hit it")
+    } else {
+      consecutive_shot <- consecutive_shot + 1 
+    } 
+    total_shots <- total_shots + 1
+  } 
+  return(total_shots)
+  # return(str_glue( #This allows for string interpolation like JavaScript, where the number of shots is input by {shots}
+  #   "This guy hit {shots} shots!", " And he used a total of {total_shots} shots."
+  # ))
 }
+  
+
 # Example usage of the function, when done
 # basket_sim <- basketball(printing = TRUE)
+basketball()
+```
+
+```{r Simulating basket shots using string interpolation}
+# Function to simulate basketball player
+basketball <- function(){
+  consecutive_shot <- 0
+  shots <- 0
+  total_shots <- 0
+  while (consecutive_shot < 2) {
+    if (rbinom(1,1, 0.6) >= 1) {
+      consecutive_shot <- 0
+      shots <- shots + 1
+      #print("You hit it")
+    } else {
+      consecutive_shot <- consecutive_shot + 1 
+    } 
+    total_shots <- total_shots + 1
+  } 
+  return(str_glue( #This allows for string interpolation like JavaScript, where the number of shots is input by {shots}
+    "This guy hit {shots} shots!", " And he used a total of {total_shots} shots."
+  ))
+}
+  
+
+# Example usage of the function, when done
+# basket_sim <- basketball(printing = TRUE)
+basketball()
+```
+
+
+```{r chats function}
+# Function to simulate basketball shots until 2 consecutive misses
+simulate_shots <- function() {
+  consecutive_misses <- 0
+  total_shots <- 0
+  successful_shots <- 0
+  
+  while (consecutive_misses < 2) {
+    # Simulate a shot
+    if (runif(1) <= 0.6) {  # Assume 60% chance of making the shot
+      consecutive_misses <- 0  # Reset consecutive misses if the shot is made
+      successful_shots <- successful_shots + 1
+    } else {
+      consecutive_misses <- consecutive_misses + 1
+    }
+    
+    total_shots <- total_shots + 1
+  }
+  
+  return(c(total_shots, successful_shots / total_shots))  # Return total shots and proportion of successes
+}
+
+# Simulate multiple trials
+num_trials <- 1000
+shots_data <- t(replicate(num_trials, simulate_shots()))
+
+# Create scatterplot
+plot(shots_data[,1], shots_data[,2], xlab = "Number of Shots", ylab = "Proportion of Successes",
+     main = "Number of Shots vs Proportion of Successes")
+
 
 ```
 
+
+
+
 #### Ex. 5.1.b) Put the R function in a loop to simulate the process 1000 times. Use the simulation to estimate the mean and standard deviation of the total number of shots that the player will take, and plot a histogram representing the distribution of this random variable. 
 ```{r}
-# your code here
+
+n_sims <- 1000
+n_shots <- rep(NA, n_sims)
+for (i in 1:n_sims) {
+   n_shots[i] <- basketball()
+}
+mean(n_shots)
+sd(n_shots)
+hist(n_shots)
+
 ```
 
 #### Ex. 5.1.c) Using your simulations, make a scatterplot of the number of shots the player will take and the proportion of shots that are successes.
 ```{r}
-# your code here
+n_shots <- as_tibble(n_shots)
+
+n_shots %>% ggplot(aes(x = length(n_shots$value), y = basketball())) +
+  geom_point()
+
+
 ```
 
 ### Ex. 5.3: Binomial distribution: A player takes 10 basketball shots, with a 40% probability of making each shot. Assume the outcomes of the shots are independent.

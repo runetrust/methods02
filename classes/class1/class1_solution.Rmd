@@ -18,21 +18,21 @@ knitr::opts_knit$set(root.dir = "/Users/pernillebrams/Desktop/AARHUS_UNIVERSITY/
 ### Setup
 ```{r}
 # Make sure this guy is installed/updated
-install.packages("rstanarm")
-library(rstanarm)
+
 
 # Load the rest
 library(pacman)
 pacman::p_load(tidyverse,
                ggpubr,
                ggplot2,
-               stringr)
+               stringr,
+               rstanarm)
 ```
 
 ### Code from Chapter 1 (not exercises, just in-chapter)
 ```{r}
 # Load data
-hibbs <- read.table("data/ElectionsEconomy/data/hibbs.dat", header = TRUE)
+hibbs <- read.table("C:/Uni/2_semester/Methods_02/methods02/classes/data/ElectionsEconomy/data/hibbs.dat", header = TRUE)
 
 # Make scatterplot
 plot(hibbs$growth, hibbs$vote, xlab="Average recent growth in personal income",

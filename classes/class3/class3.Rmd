@@ -24,6 +24,81 @@ pacman::p_load(tidyverse,
 
 ```
 
+
+```{r Live coding}
+for (number in 1:10) {
+  print(paste(number, "guy")) #Paste allows you to do string interpolation
+  squaredNumber <- number^2
+  print(squaredNumber)
+}
+
+list_names <- c("pernille", "nicolas", "anna")
+for (name in list_names) {
+  print(name)
+}
+```
+```{r more live, while loop}
+counter <- 1
+while (counter <= 17) {
+  print(paste("Counter is currently", counter))
+  counter <- counter+1 #This is necessary for counter actually counting up, otherwise infinite loop
+}
+
+```
+
+```{r live if else}
+number <- 6 
+
+if(number > 0) {
+  print("Positive number")
+} else if (number < 0) {
+  print("Negative number")
+} else {
+  print("This guy is zero")
+}
+
+################ For loop if-else
+
+list_numbers <- c(4,-5,7,36,0)
+
+for (number in list_numbers) {
+  if (number > 0) {
+    print("Positive number")
+  } else if (number < 0) {
+    print("Negative number")
+  } else {
+    print("This guy is zero")
+  }
+}
+
+############# function and for loop if else
+number_looper <- function(list_of_numbers) {
+  for (number in list_of_numbers) {
+    if (number > 0) {
+      print("Positive number")
+    } else if (number < 0) {
+      print("Negative number")
+    } else {
+      print("This guy is zero")
+    }
+  }
+}
+some_numbers <- c(-7,5,1,0,-67929)
+number_looper(some_numbers)
+
+```
+
+```{r}
+calculate_area <- function(width,
+                           length_) {
+  area <- width * length_
+  return(area)
+}
+
+calculate_area(4,2)
+
+```
+
 # Continuing learning about simulations (and practicing a bit)
 In coding, repetition is key when learning it... (at least it is for me) - it's kind of like when you learn a new language :333 n'est pas??
 
@@ -31,12 +106,18 @@ Choose your exercises as per your needs - all of this is highly relevant for the
 
 Also, never feel 'guilty' for using hints / ask for help. Hints are there and we are there to help out. Try first on your own, and use the hint/ask when you feel your working memory slacking a bit :)) Just make sure you have some idea about what's going on in the code, also after you've used the hint.
 
+
 ## A. Need some more practice in for loops?
 ### A1 Using a for-loop, calculate the sum of the first 100 positive integers, starting from 1
 Result to check: You should get 5050.
 
 Hint A1* under Hints
 ```{r}
+  my_sum <- 0
+for (i in 1:100) {
+  my_sum <- my_sum+i
+  print(my_sum)
+}
 
 ```
 
