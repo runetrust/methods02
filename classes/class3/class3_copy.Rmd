@@ -126,12 +126,11 @@ Result to check: You should get 2870.
 
 Hint A2* under Hints
 ```{r}
-for (squares in 1:20) {
-  vectors <- squares^2
-  sum_vector <- sum(vectors)
-  print(sum_vector)
+vector_squares <- c() #Creating an empty list to be input into the for loop
+for (i in 1:20) {
+  vector_squares[i] <- i^2 #This line indexes (places a number in a place in the vector) based on it's place (i), and assigns that value as i squared
 }
-
+print(sum(vector_squares))
 
 ```
 
@@ -142,7 +141,14 @@ Result to check: You should get 45 here
 Hint B1* under Hints
 
 ```{r}
+n <- 0
+sum_tracker <- 0
 
+while (sum_tracker < 1000){ #Will only run while sum_tracker object is smaller than 1000 
+  sum_tracker <- sum_tracker+n #This adds n onto the sum_tracker object for each iteration
+  n <- n+1 #Here 1 is added onto n for each iteration
+  print(n-1)
+}
 ```
 
 ### B2 Create a countdown from 10 to 1 and then print "Lift off!".
@@ -150,6 +156,13 @@ Hint B1* under Hints
 Hint B2* under Hints
 
 ```{r}
+n <- 10
+
+while (n > 10){
+  n <- n-1
+  print(n)
+}
+
 
 ```
 
@@ -195,13 +208,30 @@ Ages:
 
 ## E. Need some more practice in simulations? 
 ### E1 Write a simulation to mimic the rolling of two six-sided dice. Simulate rolling the two dice 10000 times and store the sum of the dice faces for each roll. Plot a histogram of the sums to see the distribution of the total dice rolls. Calculate and print the mean and standard deviation of the rolls.
-```{r}
+```{r dice roll simulation}
+
+die1 <- sample(1:6, 10000, replace = TRUE) #This samples through the possible lengths of 1 through 6 (the faces of the die) 10000 times, with replacement so that all values can be chosen again
+die2 <- sample(1:6, 10000, replace = TRUE)
+
+dice_sum <- die1+die2 #This just sums the two together
+
+hist(dice_sum)
+print(paste("Mean of dice rolls is ", mean(dice_sum)))
+print(paste("Standard deviation of rolls is ", sd(dice_sum)))
+
+
 
 ```
 
 ### E2 Consider a population that grows exponentially according to the formula \(P = P_0e^{rt}\) (the e^{rt} part is written exp(r*t) in r), where \(P_0\) is the initial population size, \(r\) is the rate of growth, and \(t\) is time in years. Simulate the growth of a population starting with 100 individuals and a growth rate of 2% per year over 50 years. Plot the population size each year.
 
-```{r}
+```{r plotting population growth}
+pop_start <- 100
+growth <- 2
+time <- 50
+
+function()
+
 
 ```
 ### E3 Simulate the annual returns of an investment portfolio with an average return of 7% and a standard deviation of 10%. Assume the returns follow a normal distribution. Simulate 30 years of returns and calculate the final portfolio value assuming an initial investment of $10,000. Repeat this simulation 1000 times and plot a histogram of the final portfolio values. Calculate the mean and standard deviation of the final values.
